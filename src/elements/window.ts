@@ -9,6 +9,8 @@ export class Window extends HTMLElement {
   }
 
   connectedCallback() {;
+    this.style.position = "absolute";
+
     this.div = document.createElement("div");
     this.div.classList.add("window");
 
@@ -34,8 +36,8 @@ export class Window extends HTMLElement {
     if (this.div === undefined)
       return;
 
-    this.div.style.left = `${this.x}px`;
-    this.div.style.top = `${this.y}px`;
+    this.style.left = `${this.x}px`;
+    this.style.top = `${this.y}px`;
 
     this.div.style.width = `${this.width}px`;
     this.div.style.height = `${this.height}px`;
