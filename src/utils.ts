@@ -13,3 +13,7 @@ export function screenWidth() {
 export function screenHeight() {
   return window.innerHeight;
 }
+
+export function getElem<T>(name: string) {
+  return document.getElementById(name) as T;
+}

@@ -1,9 +1,10 @@
 import { Window } from "./elements/window.js";
-import { randomInt, screenHeight, screenWidth } from "./utils.js";
+import { getElem, randomInt, screenHeight, screenWidth } from "./utils.js";
 
 customElements.define("c-window", Window);
 
-const newWindowBtn = document.getElementById("newWindowBtn") as HTMLButtonElement;
+const newWindowBtn = getElem<HTMLButtonElement>("newWindowBtn");
+const windowsDiv = getElem<HTMLDivElement>("windowsDiv");
 
 const windows: Window[] = [];
 
@@ -22,5 +23,6 @@ newWindowBtn.addEventListener("click", () => {
   window.width = width;
   window.height = height;
 
-  document.body.appendChild(window);
+  windowsDiv.appendChild(window);
+  windows.push(window);
 });
