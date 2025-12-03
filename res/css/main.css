@@ -2,4 +2,9 @@ body {
     margin: 0;
     height: 100%;
     overflow: hidden;
+    background-image: url("/res/img/wallpaper.jpg");
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center center;
+    background-repeat: no-repeat;
 }
