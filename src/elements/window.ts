@@ -1,25 +1,50 @@
 export class Window extends HTMLElement {
   static observedAttributes = ["x", "y", "width", "height"];
 
-  div?: HTMLDivElement;
+  bodyDiv?: HTMLDivElement;
 
   constructor() {
     super();
-    this.classList.add("window");
   }
 
   connectedCallback() {;
     this.style.position = "absolute";
 
-    this.div = document.createElement("div");
-    this.div.classList.add("window");
+    const window = document.createElement("div");
+    window.classList.add("window", "active", "glass");
 
-    this.appendChild(this.div);
+    const titleBar = this.createDiv(window, "title-bar");
+
+    const titleBarText = this.createDiv(titleBar, "title-bar-text");
+    titleBarText.innerText = "A glass window frame";
+
+    const titleBarControls = this.createDiv(titleBar, "title-bar-controls");
+    const _minimize = this.createButton(titleBarControls, "Minimize");
+    const _maximize = this.createButton(titleBarControls, "Maximize");
+    const _close = this.createButton(titleBarControls, "Close");
+
+    this.bodyDiv = this.createDiv(window, "window-body");
     this.updateStyle();
+
+    this.appendChild(window);
   }
 
   attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null) {
     this.updateStyle();
+  }
+
+  private createDiv(parent: HTMLElement, ...classList: string[]): HTMLDivElement {
+    const div = document.createElement("div");
+    div.classList.add(...classList);
+    parent.appendChild(div);
+    return div;
+  }
+
+  private createButton(parent: HTMLElement, ariaLabel: string): HTMLButtonElement {
+    const button = document.createElement("button");
+    button.ariaLabel = ariaLabel;
+    parent.appendChild(button);
+    return button;
   }
 
   private getAttr<T>(name: string, defaultValue: T, converter?: (value: string) => T) {
@@ -33,14 +58,14 @@ export class Window extends HTMLElement {
   }
 
   private updateStyle() {
-    if (this.div === undefined)
+    if (this.bodyDiv === undefined)
       return;
 
     this.style.left = `${this.x}px`;
     this.style.top = `${this.y}px`;
 
-    this.div.style.width = `${this.width}px`;
-    this.div.style.height = `${this.height}px`;
+    this.bodyDiv.style.width = `${this.width}px`;
+    this.bodyDiv.style.height = `${this.height}px`;
   }
 
   public get x() { return this.getAttr("x", 0, parseInt); }
