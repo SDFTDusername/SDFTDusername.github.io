@@ -1,0 +1,12 @@
+body {
+    margin: 0;
+    height: 100%;
+    overflow: hidden;
+    background-color: white;
+}
+
+.window {
+    position: absolute;
+    background-color: white;
+    outline: 1px solid black;
+}
