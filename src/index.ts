@@ -9,8 +9,8 @@ const windowsDiv = getElem<HTMLDivElement>("windowsDiv");
 const windows: Window[] = [];
 
 newWindowBtn.addEventListener("click", () => {
-  const width = randomInt(1, screenWidth());
-  const height = randomInt(1, screenHeight());
+  const width = randomInt(250, screenWidth());
+  const height = randomInt(60, screenHeight());
 
   const x = randomInt(0, screenWidth() - width);
   const y = randomInt(0, screenHeight() - height);
