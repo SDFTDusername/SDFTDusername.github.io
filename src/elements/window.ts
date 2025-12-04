@@ -1,6 +1,7 @@
 export class Window extends HTMLElement {
-  static observedAttributes = ["x", "y", "width", "height"];
+  static observedAttributes = ["x", "y", "width", "height", "app", "title"];
 
+  titleBarText?: HTMLDivElement;
   bodyDiv?: HTMLDivElement;
 
   constructor() {
@@ -10,26 +11,42 @@ export class Window extends HTMLElement {
   connectedCallback() {;
     this.style.position = "absolute";
 
-    const window = document.createElement("div");
-    window.classList.add("window", "active", "glass");
+    const window = this.createDiv(this, "window", "glass", "active");
 
     const titleBar = this.createDiv(window, "title-bar");
-
-    const titleBarText = this.createDiv(titleBar, "title-bar-text");
-    titleBarText.innerText = "A glass window frame";
+    this.titleBarText = this.createDiv(titleBar, "title-bar-text");
 
     const titleBarControls = this.createDiv(titleBar, "title-bar-controls");
-    const _minimize = this.createButton(titleBarControls, "Minimize");
-    const _maximize = this.createButton(titleBarControls, "Maximize");
-    const _close = this.createButton(titleBarControls, "Close");
+    this.createButton(titleBarControls, "Minimize");
+    this.createButton(titleBarControls, "Maximize");
+    this.createButton(titleBarControls, "Close");
 
-    this.bodyDiv = this.createDiv(window, "window-body");
+    this.bodyDiv = this.createDiv(window, "window-body", "has-space", "has-scrollbar");
+
     this.updateStyle();
+    this.loadApp();
+  }
 
-    this.appendChild(window);
+  async loadApp() {
+    if (this.bodyDiv === undefined)
+      return;
+
+    const url = `/apps/${this.app}.html`;
+
+    const response = await fetch(url);
+    if (!response.ok)
+      return;
+
+    const html = await response.text();
+    this.bodyDiv.innerHTML = html;
   }
 
   attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null) {
+    if (name === "app") {
+      this.loadApp();
+      return;
+    }
+
     this.updateStyle();
   }
 
@@ -58,14 +75,16 @@ export class Window extends HTMLElement {
   }
 
   private updateStyle() {
-    if (this.bodyDiv === undefined)
-      return;
+    if (this.bodyDiv !== undefined) {
+      this.style.left = `${this.x}px`;
+      this.style.top = `${this.y}px`;
 
-    this.style.left = `${this.x}px`;
-    this.style.top = `${this.y}px`;
+      this.bodyDiv.style.width = `${this.width}px`;
+      this.bodyDiv.style.height = `${this.height}px`;
+    }
 
-    this.bodyDiv.style.width = `${this.width}px`;
-    this.bodyDiv.style.height = `${this.height}px`;
+    if (this.titleBarText !== undefined)
+      this.titleBarText.innerText = this.title;
   }
 
   public get x() { return this.getAttr("x", 0, parseInt); }
@@ -79,4 +98,10 @@ export class Window extends HTMLElement {
 
   public get height() { return this.getAttr("height", 600, parseInt); }
   public set height(height) { this.setAttribute("height", `${height}`); }
+
+  public get app() { return this.getAttr("app", "test"); }
+  public set app(app) { this.setAttribute("app", app); }
+
+  public get title() { return this.getAttr("title", "Window"); }
+  public set title(title) { this.setAttribute("title", title); }
 }
