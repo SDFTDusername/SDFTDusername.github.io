@@ -2,11 +2,8 @@ import { Window } from "./elements/window.js";
 import { WindowAPI } from "./windowAPI.js";
 
 export class GlobalAPI {
+  currentScriptId = 0;
   windows = new Map<number, Window>;
-
-  test() {
-    window.alert("test from global");
-  }
 
   nextWindowId(): number {
     let windowId = 0;

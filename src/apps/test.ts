@@ -1,5 +1,8 @@
 import { WindowAPI } from "../windowAPI.js";
 
 const api = WindowAPI.getFromDocument()!;
-api.test();
-api.globalApi.test();
+
+const closeBtn = api.body.querySelector("#closeBtn") as HTMLButtonElement;
+closeBtn.addEventListener("click", () => {
+  api.close();
+});

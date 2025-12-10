@@ -1,14 +1,17 @@
+import { Window } from "./elements/window.js";
 import { GlobalAPI } from "./globalAPI.js";
 
 export class WindowAPI {
   windowId!: number;
   globalApi!: GlobalAPI;
+  window!: Window;
 
   body!: HTMLDivElement;
   script!: HTMLScriptElement;
 
-  test() {
-    window.alert(`test from window ID ${this.windowId}`);
+  close() {
+    this.globalApi.windows.delete(this.windowId);
+    this.window.remove();
   }
 
   setInDocument() {

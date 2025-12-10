@@ -23,6 +23,7 @@ export class Window extends HTMLElement {
     this.windowApi = new WindowAPI;
     this.windowApi.globalApi = globalApi;
     this.windowApi.windowId = this.windowId;
+    this.windowApi.window = this;
 
     globalApi.windows.set(this.windowId, this);
   }
@@ -38,7 +39,7 @@ export class Window extends HTMLElement {
     const titleBarControls = this.createDiv(titleBar, "title-bar-controls");
     this.createButton(titleBarControls, "Minimize");
     this.createButton(titleBarControls, "Maximize");
-    this.createButton(titleBarControls, "Close");
+    this.createButton(titleBarControls, "Close").addEventListener("click", () => this.windowApi.close());
 
     this.bodyDiv = this.createDiv(window, "window-body", "has-space", "has-scrollbar");
 
@@ -61,7 +62,7 @@ export class Window extends HTMLElement {
 
     this.script = document.createElement("script");
     this.script.type = "module";
-    this.script.src = `/dist/apps/${this.app}.js?id=${this.windowId}`;
+    this.script.src = `/dist/apps/${this.app}.js?id=${this.globalApi.currentScriptId++}`;
     this.script.defer = true;
 
     this.body = this.createDiv(this.bodyDiv);
