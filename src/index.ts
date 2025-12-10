@@ -1,4 +1,5 @@
 import { Window } from "./elements/window.js";
+import { GlobalAPI } from "./globalAPI.js";
 import { getElem, randomInt, screenHeight, screenWidth } from "./utils.js";
 
 customElements.define("c-window", Window);
@@ -6,7 +7,8 @@ customElements.define("c-window", Window);
 const newWindowBtn = getElem<HTMLButtonElement>("newWindowBtn");
 const windowsDiv = getElem<HTMLDivElement>("windowsDiv");
 
-const windows: Window[] = [];
+const globalApi = new GlobalAPI;
+globalApi.setInDocument();
 
 newWindowBtn.addEventListener("click", () => {
   const width = randomInt(250, screenWidth());
@@ -15,7 +17,7 @@ newWindowBtn.addEventListener("click", () => {
   const x = randomInt(0, screenWidth() - width);
   const y = randomInt(0, screenHeight() - height);
 
-  const window = new Window;
+  const window = new Window(globalApi);
 
   window.x = x;
   window.y = y;
@@ -24,5 +26,4 @@ newWindowBtn.addEventListener("click", () => {
   window.height = height;
 
   windowsDiv.appendChild(window);
-  windows.push(window);
 });

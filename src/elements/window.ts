@@ -1,11 +1,30 @@
+import { GlobalAPI } from "../globalAPI.js";
+import { WindowAPI } from "../windowAPI.js";
+
 export class Window extends HTMLElement {
   static observedAttributes = ["x", "y", "width", "height", "app", "title"];
+
+  globalApi: GlobalAPI;
+  windowId: number;
+  windowApi: WindowAPI;
 
   titleBarText?: HTMLDivElement;
   bodyDiv?: HTMLDivElement;
 
-  constructor() {
+  body?: HTMLDivElement;
+  script?: HTMLScriptElement;
+
+  constructor(globalApi: GlobalAPI) {
     super();
+
+    this.globalApi = globalApi
+    this.windowId = globalApi.nextWindowId();
+
+    this.windowApi = new WindowAPI;
+    this.windowApi.globalApi = globalApi;
+    this.windowApi.windowId = this.windowId;
+
+    globalApi.windows.set(this.windowId, this);
   }
 
   connectedCallback() {;
@@ -37,8 +56,24 @@ export class Window extends HTMLElement {
     if (!response.ok)
       return;
 
+    while (this.bodyDiv.lastChild)
+      this.bodyDiv.removeChild(this.bodyDiv.lastChild);
+
+    this.script = document.createElement("script");
+    this.script.type = "module";
+    this.script.src = `/dist/apps/${this.app}.js?id=${this.windowId}`;
+    this.script.defer = true;
+
+    this.body = this.createDiv(this.bodyDiv);
+
     const html = await response.text();
-    this.bodyDiv.innerHTML = html;
+    this.body.innerHTML = html;
+
+    this.windowApi.body = this.body;
+    this.windowApi.script = this.script;
+    this.windowApi.setInDocument();
+
+    this.bodyDiv.appendChild(this.script);
   }
 
   attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null) {
