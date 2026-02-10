@@ -11,6 +11,7 @@ export class Window extends HTMLElement {
   titleBarText?: HTMLDivElement;
   bodyDiv?: HTMLDivElement;
 
+  window?: HTMLDivElement;
   body?: HTMLDivElement;
   script?: HTMLScriptElement;
 
@@ -31,9 +32,9 @@ export class Window extends HTMLElement {
   connectedCallback() {;
     this.style.position = "absolute";
 
-    const window = this.createDiv(this, "window", "glass", "active");
+    this.window = this.createDiv(this, "window", "glass", "focus");
 
-    const titleBar = this.createDiv(window, "title-bar");
+    const titleBar = this.createDiv(this.window, "title-bar");
     this.titleBarText = this.createDiv(titleBar, "title-bar-text");
 
     const titleBarControls = this.createDiv(titleBar, "title-bar-controls");
@@ -41,7 +42,7 @@ export class Window extends HTMLElement {
     this.createButton(titleBarControls, "Maximize");
     this.createButton(titleBarControls, "Close").addEventListener("click", () => this.windowApi.close());
 
-    this.bodyDiv = this.createDiv(window, "window-body", "has-space", "has-scrollbar");
+    this.bodyDiv = this.createDiv(this.window, "window-body", "has-space", "has-scrollbar");
 
     this.updateStyle();
     this.loadApp();
